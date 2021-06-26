@@ -80,14 +80,23 @@ func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 }
 
 func main() {
-	fmt.Print("Raw password: ")
-	rawPassword, err := readRawPassword(int(syscall.Stdin))
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	var rawPassword []byte
+
+	if len(os.Args) > 1 {
+		rawPassword = []byte(os.Args[1])
+	} else {
+		fmt.Print("Raw password: ")
+		passwd, err := readRawPassword(int(syscall.Stdin))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		rawPassword = passwd
+		fmt.Println()
 	}
+
 	if len(rawPassword) == 0 {
-		fmt.Println("empty")
+		fmt.Println("empty password")
 		os.Exit(1)
 	}
 
@@ -97,6 +106,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("\n%s\n", encryptPassword(rawPassword, salt, iterationCnt, digestLen))
+	fmt.Printf("%s\n", encryptPassword(rawPassword, salt, iterationCnt, digestLen))
 	os.Exit(0)
 }

@@ -1,0 +1,57 @@
+---
+# @see https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
+# @see https://docs.github.com/en/actions/guides/creating-postgresql-service-containers
+# @see https://github.com/actions/virtual-environments
+# @see https://www.postgresql.jp/document/11/html/app-pgrestore.html
+name: Test
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  test:
+    name: Test
+    timeout-minutes: 3
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    services:
+      postgres:
+        image: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
+          PGUSER: postgres
+    env:
+      PGUSER: test
+      PGPASSWORD: test
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: make
+
+      - name: Create role for test
+        run: |
+          echo -n "CREATE ROLE $PGUSER WITH LOGIN PASSWORD " >> $SQL_FILE_PATH
+          echo -n "'"                                        >> $SQL_FILE_PATH
+          ./encrypt $PGPASSWORD | tr -d '\n'                 >> $SQL_FILE_PATH
+          echo "';"                                          >> $SQL_FILE_PATH
+          cat $SQL_FILE_PATH
+          docker cp $SQL_FILE_PATH 'postgres:/tmp/test.sql'
+          docker exec -it postgres bash -c 'cat /tmp/test.sql | psql'
+        env:
+          SQL_FILE_PATH: /tmp/create_role.sql
+
+      - name: Check roles out
+        run: docker exec -it postgres psql -c 'SELECT usename, passwd FROM pg_catalog.pg_shadow'
+
+      - name: Test login
+        run: docker exec -it postgres bash -c "PGPASSWORD=$PGPASSWORD psql -h 127.0.0.1 -U $PGUSER -w -d postgres -c 'SELECT 1'"
