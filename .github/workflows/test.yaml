@@ -45,10 +45,10 @@ jobs:
 
       - name: Create role for test
         run: |
-          echo -n "CREATE ROLE $PGUSER WITH LOGIN PASSWORD " >> $SQL_FILE_PATH
-          echo -n "'"                                        >> $SQL_FILE_PATH
-          ./encrypt $PGPASSWORD | tr -d '\n'                 >> $SQL_FILE_PATH
-          echo "';"                                          >> $SQL_FILE_PATH
+          echo -n "CREATE ROLE test WITH LOGIN PASSWORD " >> $SQL_FILE_PATH
+          echo -n "'"                                     >> $SQL_FILE_PATH
+          ./encrypt test | tr -d '\n'                     >> $SQL_FILE_PATH
+          echo "';"                                       >> $SQL_FILE_PATH
           cat $SQL_FILE_PATH
           cat $SQL_FILE_PATH | psql
         env:
