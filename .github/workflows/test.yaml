@@ -19,6 +19,8 @@ jobs:
     services:
       postgres:
         image: postgres
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -27,11 +29,14 @@ jobs:
         env:
           POSTGRES_PASSWORD: postgres
           POSTGRES_INITDB_ARGS: '--auth-host=scram-sha-256'
-          PGUSER: postgres
     env:
-      PGUSER: test
-      PGPASSWORD: test
+      PGHOST: 127.0.0.1
+      PGPORT: 5432
+      PGDATABASE: postgres
     steps:
+      - name: Install PostgreSQL clients
+        run: sudo apt update && sudo apt install -y --no-install-recommends postgresql-client
+
       - name: Check out code
         uses: actions/checkout@v2
 
@@ -45,13 +50,26 @@ jobs:
           ./encrypt $PGPASSWORD | tr -d '\n'                 >> $SQL_FILE_PATH
           echo "';"                                          >> $SQL_FILE_PATH
           cat $SQL_FILE_PATH
-          docker cp $SQL_FILE_PATH 'postgres:/tmp/test.sql'
-          docker exec -it postgres bash -c 'cat /tmp/test.sql | psql'
+          cat $SQL_FILE_PATH | psql
         env:
           SQL_FILE_PATH: /tmp/create_role.sql
+          PGUSER: postgres
+          PGPASSWORD: postgres
 
       - name: Check roles out
-        run: docker exec -it postgres psql -c 'SELECT usename, passwd FROM pg_catalog.pg_shadow'
+        run: psql -c 'SELECT usename, passwd FROM pg_catalog.pg_shadow'
+        env:
+          PGUSER: postgres
+          PGPASSWORD: postgres
 
-      - name: Test login
-        run: docker exec -it postgres bash -c "PGPASSWORD=$PGPASSWORD psql -h 127.0.0.1 -U $PGUSER -w -d postgres -c 'SELECT 1'"
+      - name: Test login success
+        run: psql -c 'SELECT user'
+        env:
+          PGUSER: test
+          PGPASSWORD: test
+
+      - name: Test login fail
+        run: psql -c 'SELECT user' || echo 'fail ok'
+        env:
+          PGUSER: test
+          PGPASSWORD: wrong
