@@ -1,4 +1,4 @@
-Let's encrypt password with SCRAM-SHA-256 for PostgreSQL
+Let's encrypt password for PostgreSQL using SCRAM-SHA-256
 ===============================================================================
 
 ### Build
