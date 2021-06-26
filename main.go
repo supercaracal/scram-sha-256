@@ -42,26 +42,38 @@ func readRawPassword(fd int) ([]byte, error) {
 	return input, nil
 }
 
+func encodeB64(src []byte) (dst []byte) {
+	dst = make([]byte, base64.StdEncoding.EncodedLen(len(src)))
+	base64.StdEncoding.Encode(dst, src)
+	return
+}
+
+func getHashSum(key, msg []byte) []byte {
+	h := hmac.New(sha256.New, key)
+	_, _ = h.Write(msg)
+	return h.Sum(nil)
+}
+
+func getStoredKey(clientKey []byte) (storedKey []byte) {
+	key := sha256.Sum256(clientKey)
+	storedKey = make([]byte, 0, len(key))
+	for _, b := range key {
+		storedKey = append(storedKey, b)
+	}
+	return
+}
+
 func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 	digestKey := pbkdf2.Key(rawPassword, salt, iter, keyLen, sha256.New)
-	h := hmac.New(sha256.New, digestKey)
-
-	b64Salt := make([]byte, base64.StdEncoding.EncodedLen(len(salt)))
-	base64.StdEncoding.Encode(b64Salt, salt)
-
-	clientKey := h.Sum([]byte("Client Key"))
-	b64ClientKey := make([]byte, base64.StdEncoding.EncodedLen(len(clientKey)))
-	base64.StdEncoding.Encode(b64ClientKey, clientKey)
-
-	serverKey := h.Sum([]byte("Server Key"))
-	b64ServerKey := make([]byte, base64.StdEncoding.EncodedLen(len(serverKey)))
-	base64.StdEncoding.Encode(b64ServerKey, serverKey)
+	clientKey := getHashSum(digestKey, []byte("Client Key"))
+	storedKey := getStoredKey(clientKey)
+	serverKey := getHashSum(digestKey, []byte("Server Key"))
 
 	return fmt.Sprintf("SCRAM-SHA-256$%d:%s$%s:%s",
 		iter,
-		string(b64Salt),
-		string(b64ClientKey),
-		string(b64ServerKey),
+		string(encodeB64(salt)),
+		string(encodeB64(storedKey)),
+		string(encodeB64(serverKey)),
 	)
 }
 
