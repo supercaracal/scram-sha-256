@@ -29,7 +29,7 @@ const (
 func genSalt(size int) ([]byte, error) {
 	salt := make([]byte, size)
 	if _, err := io.ReadFull(rand.Reader, salt); err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return salt, nil
 }
@@ -42,7 +42,7 @@ func readRawPassword(fd int) ([]byte, error) {
 	return input, nil
 }
 
-func encryptPassword(rawPassword, salt []byte, iter, keyLen int) (string, error) {
+func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 	digestKey := pbkdf2.Key(rawPassword, salt, iter, keyLen, sha256.New)
 	h := hmac.New(sha256.New, digestKey)
 
@@ -62,7 +62,7 @@ func encryptPassword(rawPassword, salt []byte, iter, keyLen int) (string, error)
 		string(b64Salt),
 		string(b64ClientKey),
 		string(b64ServerKey),
-	), nil
+	)
 }
 
 func main() {
@@ -83,12 +83,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	output, err := encryptPassword(rawPassword, salt, iterationCnt, digestLen)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	fmt.Printf("\n%s\n", output)
+	fmt.Printf("\n%s\n", encryptPassword(rawPassword, salt, iterationCnt, digestLen))
 	os.Exit(0)
 }
