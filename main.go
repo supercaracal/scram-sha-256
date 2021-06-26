@@ -63,6 +63,7 @@ func getStoredKey(clientKey []byte) (storedKey []byte) {
 	return
 }
 
+// FIXME: some bugs
 func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 	digestKey := pbkdf2.Key(rawPassword, salt, iter, keyLen, sha256.New)
 	clientKey := getHashSum(digestKey, []byte("Client Key"))
