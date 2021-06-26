@@ -10,7 +10,7 @@ $ make
 ```
 $ ./encrypt
 Raw password:
-SCRAM-SHA-256$4096:yTo5lMI+1XyqZOcvYz99Kw==$VJcML25bB3h0xiMUFw9D4spAJwp8IxD1CxnkR7XPty8=:NE05auswTZk1ntaXa8DrO9tYekyhfv1qRMXmugXpGPc=
+SCRAM-SHA-256$4096:Mg8UNqSaPstxvBVRVYPQTw==$Zl7Rhln+rus3z+4YwC+7CgL/uKSUvqWH8mHMUizh1EI=:G9dSawW20CNLxTnZdcwHEHg9U9hG2noNEV2/t7ptq3s=
 ```
 
 ### Testing
@@ -19,7 +19,9 @@ $ docker run --rm --name=test -e POSTGRES_PASSWORD=postgres -e POSTGRES_INITDB_A
 ```
 
 ```
-$ docker exec -it test psql -U postgres -c "CREATE ROLE test WITH LOGIN PASSWORD 'SCRAM-SHA-256$4096:yTo5lMI+1XyqZOcvYz99Kw==$VJcML25bB3h0xiMUFw9D4spAJwp8IxD1CxnkR7XPty8=:NE05auswTZk1ntaXa8DrO9tYekyhfv1qRMXmugXpGPc='"
+$ docker exec -it test bash -c 'cat | psql -U postgres'
+CREATE ROLE test WITH LOGIN PASSWORD 'SCRAM-SHA-256$4096:Mg8UNqSaPstxvBVRVYPQTw==$Zl7Rhln+rus3z+4YwC+7CgL/uKSUvqWH8mHMUizh1EI=:G9dSawW20CNLxTnZdcwHEHg9U9hG2noNEV2/t7ptq3s='
+## press Ctrl-D
 CREATE ROLE
 ```
 
@@ -28,7 +30,7 @@ $ docker exec -it test psql -U postgres -c 'SELECT usename, passwd FROM pg_catal
  usename  |                                                                passwd                                                                 
 ----------+---------------------------------------------------------------------------------------------------------------------------------------
  postgres | SCRAM-SHA-256$4096:N+t+PZUQAu25roNaMJiQIw==$MNmcJjqjLwfWBTvKq2zRCWSWPFQX6KnDqqyrqA1XU5g=:jL3qX7jzS4wSP1rOmEbbmLReYL98WeKukK8SfLcdpvU= 
- test     | SCRAM-SHA-256$4096:yTo5lMI+1XyqZOcvYz99Kw==$VJcML25bB3h0xiMUFw9D4spAJwp8IxD1CxnkR7XPty8=:NE05auswTZk1ntaXa8DrO9tYekyhfv1qRMXmugXpGPc= 
+ test     | SCRAM-SHA-256$4096:Mg8UNqSaPstxvBVRVYPQTw==$Zl7Rhln+rus3z+4YwC+7CgL/uKSUvqWH8mHMUizh1EI=:G9dSawW20CNLxTnZdcwHEHg9U9hG2noNEV2/t7ptq3s= 
 (2 rows)
 ```
 

@@ -21,8 +21,13 @@ import (
 )
 
 const (
-	saltSize     = 16
-	digestLen    = 32
+	// @see https://github.com/postgres/postgres/blob/e6bdfd9700ebfc7df811c97c2fc46d7e94e329a2/src/include/common/scram-common.h#L36-L41
+	saltSize = 16
+
+	// @see https://github.com/postgres/postgres/blob/c30f54ad732ca5c8762bb68bbe0f51de9137dd72/src/include/common/sha2.h#L22
+	digestLen = 32
+
+	// @see https://github.com/postgres/postgres/blob/e6bdfd9700ebfc7df811c97c2fc46d7e94e329a2/src/include/common/scram-common.h#L43-L47
 	iterationCnt = 4096
 )
 
@@ -48,27 +53,23 @@ func encodeB64(src []byte) (dst []byte) {
 	return
 }
 
-func getHashSum(key, msg []byte) []byte {
+func getHMACSum(key, msg []byte) []byte {
 	h := hmac.New(sha256.New, key)
 	_, _ = h.Write(msg)
 	return h.Sum(nil)
 }
 
-func getStoredKey(clientKey []byte) (storedKey []byte) {
-	key := sha256.Sum256(clientKey)
-	storedKey = make([]byte, 0, len(key))
-	for _, b := range key {
-		storedKey = append(storedKey, b)
-	}
-	return
+func getSHA256Sum(key []byte) []byte {
+	h := sha256.New()
+	_, _ = h.Write(key)
+	return h.Sum(nil)
 }
 
-// FIXME: some bugs
 func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 	digestKey := pbkdf2.Key(rawPassword, salt, iter, keyLen, sha256.New)
-	clientKey := getHashSum(digestKey, []byte("Client Key"))
-	storedKey := getStoredKey(clientKey)
-	serverKey := getHashSum(digestKey, []byte("Server Key"))
+	clientKey := getHMACSum(digestKey, []byte("Client Key"))
+	storedKey := getSHA256Sum(clientKey)
+	serverKey := getHMACSum(digestKey, []byte("Server Key"))
 
 	return fmt.Sprintf("SCRAM-SHA-256$%d:%s$%s:%s",
 		iter,
