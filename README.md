@@ -1,4 +1,5 @@
 ![](https://github.com/supercaracal/scram-sha-256/workflows/Test/badge.svg?branch=master)
+![](https://github.com/supercaracal/scram-sha-256/workflows/Release/badge.svg?branch=master)
 
 Let's encrypt password for PostgreSQL using SCRAM-SHA-256
 ===============================================================================
