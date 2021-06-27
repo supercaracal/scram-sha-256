@@ -1,22 +1,34 @@
 ![](https://github.com/supercaracal/scram-sha-256/workflows/Test/badge.svg?branch=master)
 ![](https://github.com/supercaracal/scram-sha-256/workflows/Release/badge.svg)
 
-Let's encrypt password for PostgreSQL using SCRAM-SHA-256
+A password generator for PostgreSQL
 ===============================================================================
 
-### Build
+This is a password generator for PostgreSQL.  
+It encrypt a raw string with SCRAM-SHA-256.  
+
+## Installation
+Please see [the release contents](https://github.com/supercaracal/scram-sha-256/releases/tag/v1.0.0).
+
+```
+## Linux AMD64
+$ curl -sL https://github.com/supercaracal/scram-sha-256/releases/download/v1.0.0/scram-sha-256_1.0.0_linux_amd64.tar.gz | tar zx -C /tmp
+$ mv /tmp/scram-sha-256 /path/to/your/dir/
+```
+
+## Build
 ```
 $ make
 ```
 
-### Encryption
+## Encryption
 ```
 $ ./encrypt
 Raw password:
 SCRAM-SHA-256$4096:Mg8UNqSaPstxvBVRVYPQTw==$Zl7Rhln+rus3z+4YwC+7CgL/uKSUvqWH8mHMUizh1EI=:G9dSawW20CNLxTnZdcwHEHg9U9hG2noNEV2/t7ptq3s=
 ```
 
-### Testing
+## Testing
 ```
 $ docker run --rm --name=test -e POSTGRES_PASSWORD=postgres -e POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256 -e PGUSER=postgres postgres
 ```
