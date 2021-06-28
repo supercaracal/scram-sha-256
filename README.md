@@ -5,7 +5,7 @@ A password generator for PostgreSQL
 ===============================================================================
 
 This is a password generator for PostgreSQL.  
-It encrypt a raw string with SCRAM-SHA-256.  
+It encrypts a raw string with SCRAM-SHA-256.  
 
 ## Installation
 ```
