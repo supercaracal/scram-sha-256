@@ -49,8 +49,7 @@ jobs:
           echo -n "'"                                     >> $SQL_FILE_PATH
           ./encrypt test | tr -d '\n'                     >> $SQL_FILE_PATH
           echo "';"                                       >> $SQL_FILE_PATH
-          cat $SQL_FILE_PATH
-          cat $SQL_FILE_PATH | psql
+          cat $SQL_FILE_PATH | tee /dev/stdout | psql
         env:
           SQL_FILE_PATH: /tmp/create_role.sql
           PGUSER: postgres
