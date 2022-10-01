@@ -31,6 +31,11 @@ const (
 	iterationCnt = 4096
 )
 
+var (
+	clientRawKey = []byte("Client Key")
+	serverRawKey = []byte("Server Key")
+)
+
 func genSalt(size int) ([]byte, error) {
 	salt := make([]byte, size)
 	if _, err := io.ReadFull(rand.Reader, salt); err != nil {
@@ -67,9 +72,9 @@ func getSHA256Sum(key []byte) []byte {
 
 func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 	digestKey := pbkdf2.Key(rawPassword, salt, iter, keyLen, sha256.New)
-	clientKey := getHMACSum(digestKey, []byte("Client Key"))
+	clientKey := getHMACSum(digestKey, clientRawKey)
 	storedKey := getSHA256Sum(clientKey)
-	serverKey := getHMACSum(digestKey, []byte("Server Key"))
+	serverKey := getHMACSum(digestKey, serverRawKey)
 
 	return fmt.Sprintf("SCRAM-SHA-256$%d:%s$%s:%s",
 		iter,
