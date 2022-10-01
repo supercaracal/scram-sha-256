@@ -8,12 +8,7 @@ This is a password generator for PostgreSQL.
 It encrypts a raw string with SCRAM-SHA-256.  
 
 ## Installation
-```
-## Linux AMD64
-$ curl -sL https://github.com/supercaracal/scram-sha-256/releases/download/v1.0.0/scram-sha-256_1.0.0_linux_amd64.tar.gz | tar zx -C /tmp
-```
-
-If you want to get more information, please see [the release contents](https://github.com/supercaracal/scram-sha-256/releases/tag/v1.0.0).
+Please download a executable file from [release pages](https://github.com/supercaracal/scram-sha-256/releases).
 
 ## Usage
 ```

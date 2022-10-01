@@ -14,14 +14,23 @@ on:
 jobs:
   test:
     name: Test
-    timeout-minutes: 3
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres:
+          - 10-alpine
+          - 11-alpine
+          - 12-alpine
+          - 13-alpine
+          - 14-alpine
     services:
       postgres:
-        image: postgres
+        image: postgres:${{ matrix.postgres }}
         ports:
           - 5432:5432
         options: >-
