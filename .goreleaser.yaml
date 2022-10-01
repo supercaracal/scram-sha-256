@@ -1,0 +1,31 @@
+project_name: scram-sha-256
+
+# https://goreleaser.com/customization/build/
+# https://go.dev/doc/install/source#environment
+builds:
+  - env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    # https://github.com/golang/go/wiki/GoArm
+    # https://www.cs.umd.edu/~meesh/cmsc411/website/proj01/arm/armchip.html
+    goarm:
+      - 6
+      - 7
+
+# https://goreleaser.com/customization/archive/
+archives:
+  - name_template: '{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}{{ with .Arm }}-v{{ . }}{{ end }}'
+    format: binary
+    replacements:
+      amd64: x86_64

@@ -6,29 +6,28 @@ on:
   push:
     tags:
       - "v*"
-permissions:
-  contents: write
 jobs:
   release:
     name: Release
     timeout-minutes: 10
     runs-on: ubuntu-latest
+    concurrency: scram-sha-256
+    permissions:
+      contents: write
     defaults:
       run:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v3
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: 1.16
+          go-version: 1.19
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v3
         with:
           distribution: goreleaser
           version: latest
