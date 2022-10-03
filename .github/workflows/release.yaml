@@ -9,6 +9,7 @@ on:
 jobs:
   release:
     name: Release
+    if: github.repository == 'supercaracal/scram-sha-256'
     timeout-minutes: 10
     runs-on: ubuntu-latest
     concurrency: scram-sha-256
