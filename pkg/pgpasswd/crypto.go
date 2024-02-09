@@ -1,4 +1,4 @@
-package main
+package pgpasswd
 
 // @see https://github.com/postgres/postgres/blob/c30f54ad732ca5c8762bb68bbe0f51de9137dd72/src/interfaces/libpq/fe-auth.c#L1167-L1285
 // @see https://github.com/postgres/postgres/blob/e6bdfd9700ebfc7df811c97c2fc46d7e94e329a2/src/interfaces/libpq/fe-auth-scram.c#L868-L905
@@ -13,11 +13,8 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"os"
-	"syscall"
 
 	"golang.org/x/crypto/pbkdf2"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 const (
@@ -42,14 +39,6 @@ func genSalt(size int) ([]byte, error) {
 		return nil, err
 	}
 	return salt, nil
-}
-
-func readRawPassword(fd int) ([]byte, error) {
-	input, err := terminal.ReadPassword(fd)
-	if err != nil {
-		return nil, err
-	}
-	return input, nil
 }
 
 func encodeB64(src []byte) (dst []byte) {
@@ -84,33 +73,12 @@ func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 	)
 }
 
-func main() {
-	var rawPassword []byte
-
-	if len(os.Args) > 1 {
-		rawPassword = []byte(os.Args[1])
-	} else {
-		fmt.Print("Raw password: ")
-		passwd, err := readRawPassword(int(syscall.Stdin))
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		rawPassword = passwd
-		fmt.Println()
-	}
-
-	if len(rawPassword) == 0 {
-		fmt.Println("empty password")
-		os.Exit(1)
-	}
-
+// Encrypt encrypts a raw password with scram-sha-256
+func Encrypt(rawPassword []byte) (string, error) {
 	salt, err := genSalt(saltSize)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return "", err
 	}
 
-	fmt.Printf("%s\n", encryptPassword(rawPassword, salt, iterationCnt, digestLen))
-	os.Exit(0)
+	return encryptPassword(rawPassword, salt, iterationCnt, digestLen), nil
 }

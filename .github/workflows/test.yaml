@@ -52,10 +52,10 @@ jobs:
         run: sudo apt update && sudo apt install -y --no-install-recommends postgresql-client
 
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           check-latest: true
@@ -68,7 +68,7 @@ jobs:
         run: |
           echo -n "CREATE ROLE test WITH LOGIN PASSWORD " >> $SQL_FILE_PATH
           echo -n "'"                                     >> $SQL_FILE_PATH
-          ./encrypt test | tr -d '\n'                     >> $SQL_FILE_PATH
+          ./cmd/tool/encrypt test | tr -d '\n'            >> $SQL_FILE_PATH
           echo "';"                                       >> $SQL_FILE_PATH
           cat $SQL_FILE_PATH | tee /dev/stderr | psql
         env:
