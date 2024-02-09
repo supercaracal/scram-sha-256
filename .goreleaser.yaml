@@ -22,10 +22,9 @@ builds:
     goarm:
       - 6
       - 7
+    main: ./cmd/tool
 
 # https://goreleaser.com/customization/archive/
 archives:
   - name_template: '{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}{{ with .Arm }}-v{{ . }}{{ end }}'
     format: binary
-    replacements:
-      amd64: x86_64
