@@ -12,8 +12,34 @@ on:
     branches:
       - master
 jobs:
-  test:
-    name: Test
+  unit:
+    name: Unit
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+          cache: true
+
+      - name: Download modules
+        run: go mod download
+
+      - name: Lint
+        run: make lint
+
+      - name: Test
+        run: make test
+  feature:
+    name: Feature
     timeout-minutes: 5
     runs-on: ubuntu-latest
     defaults:
@@ -60,6 +86,9 @@ jobs:
           go-version-file: go.mod
           check-latest: true
           cache: true
+
+      - name: Download modules
+        run: go mod download
 
       - name: Build
         run: make
