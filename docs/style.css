@@ -1,0 +1,15 @@
+body {
+  background-color: #555555;
+}
+
+div.block {
+  margin-top: 10px;
+}
+
+input#raw-password {
+  width: 480px;
+}
+
+input#encrypted-password {
+  width: 1280px;
+}
