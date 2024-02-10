@@ -50,8 +50,8 @@ func doSomething(rawPassword []byte) error {
 ```
 $ git clone https://github.com/supercaracal/scram-sha-256.git
 $ cd scram-sha-256/
-$ make
-$ ./cmd/tool/encrypt
+$ make term
+$ ./cmd/term/encrypt
 Raw password:
 SCRAM-SHA-256$4096:Mg8UNqSaPstxvBVRVYPQTw==$Zl7Rhln+rus3z+4YwC+7CgL/uKSUvqWH8mHMUizh1EI=:G9dSawW20CNLxTnZdcwHEHg9U9hG2noNEV2/t7ptq3s=
 ```

@@ -22,7 +22,7 @@ builds:
     goarm:
       - 6
       - 7
-    main: ./cmd/tool
+    main: ./cmd/term
 
 # https://goreleaser.com/customization/archive/
 archives:
