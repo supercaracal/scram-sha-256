@@ -1,7 +1,7 @@
 ![](https://github.com/supercaracal/scram-sha-256/workflows/Test/badge.svg?branch=master)
 ![](https://github.com/supercaracal/scram-sha-256/workflows/Release/badge.svg)
 
-A password generator for PostgreSQL
+SCRAM-SHA-256
 ===============================================================================
 
 This is a password-encryption tool for PostgreSQL with SCRAM-SHA-256.
