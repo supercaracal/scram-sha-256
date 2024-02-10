@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	appName = "scram-sha-256"
+	appName   = "scram-sha-256"
+	staticDir = "docs"
 )
 
 var (
@@ -21,7 +22,7 @@ var (
 
 func makeStaticHandler(f string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, f)
+		http.ServeFile(w, r, fmt.Sprintf("%s/%s", staticDir, f))
 	}
 }
 

@@ -91,13 +91,13 @@ jobs:
         run: go mod download
 
       - name: Build
-        run: make
+        run: make term
 
       - name: Create role for test
         run: |
           echo -n "CREATE ROLE test WITH LOGIN PASSWORD " >> $SQL_FILE_PATH
           echo -n "'"                                     >> $SQL_FILE_PATH
-          ./cmd/tool/encrypt test | tr -d '\n'            >> $SQL_FILE_PATH
+          ./cmd/term/encrypt test | tr -d '\n'            >> $SQL_FILE_PATH
           echo "';"                                       >> $SQL_FILE_PATH
           cat $SQL_FILE_PATH | tee /dev/stderr | psql
         env:
