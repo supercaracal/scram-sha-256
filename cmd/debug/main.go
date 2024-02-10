@@ -8,6 +8,8 @@ import (
 const (
 	appName   = "scram-sha-256"
 	staticDir = "docs"
+	rootFile  = "index.html"
+	port      = 3000
 )
 
 var (
@@ -27,11 +29,11 @@ func makeStaticHandler(f string) func(http.ResponseWriter, *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", makeStaticHandler("index.html"))
+	http.HandleFunc("/", makeStaticHandler(rootFile))
 
 	for _, f := range staticFiles {
 		http.HandleFunc(fmt.Sprintf("/%s/%s", appName, f), makeStaticHandler(f))
 	}
 
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 }
