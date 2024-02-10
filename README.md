@@ -4,22 +4,35 @@
 A password generator for PostgreSQL
 ===============================================================================
 
-This is a password generator for PostgreSQL.  
-It encrypts a raw string with SCRAM-SHA-256.  
+This is a password-encryption tool for PostgreSQL with SCRAM-SHA-256.
 
 ## Installation
-Please download a executable file from [release pages](https://github.com/supercaracal/scram-sha-256/releases).
+Please download an executable file from [release pages](https://github.com/supercaracal/scram-sha-256/releases).
 
 ## Usage
 ```
-$ /tmp/scram-sha-256
+$ scram-sha-256
 Raw password:
 SCRAM-SHA-256$4096:Wj5Wd30IrYzvZxJJ5NSuNg==$27HbcXbdKQd55FvzhEFq8DpPKQBRCvcnOOYFJ07Fr7s=:CibjLDWHtzbFjhSejBWcRkRGmuB2njOC8GxDh3gSwrE=
 ```
 
 ```
-$ /tmp/scram-sha-256 mysecret
+$ scram-sha-256 mysecret
 SCRAM-SHA-256$4096:1Iuyc2XTVSv/GFgCWSv9Xw==$nU96dFyIuV+uWwiOly7HU5yinIJh55GsItyFAYrU2sc=:fEC668A2ufIsGS+9WC8xqD0hHvHQBbLiDxZ8hWlwkCw=
+```
+
+```go
+import "github.com/supercaracal/scram-sha-256/pkg/pgpasswd"
+
+func doSomething(rawPassword []byte) error {
+    encrypted, err := pgpasswd.Encrypt(rawPassword)
+    if err != nil {
+        return err
+    }
+
+    // do something
+    return nil
+}
 ```
 
 ## Build locally
@@ -27,7 +40,7 @@ SCRAM-SHA-256$4096:1Iuyc2XTVSv/GFgCWSv9Xw==$nU96dFyIuV+uWwiOly7HU5yinIJh55GsItyF
 $ git clone https://github.com/supercaracal/scram-sha-256.git
 $ cd scram-sha-256/
 $ make
-$ ./encrypt
+$ ./cmd/tool/encrypt
 Raw password:
 SCRAM-SHA-256$4096:Mg8UNqSaPstxvBVRVYPQTw==$Zl7Rhln+rus3z+4YwC+7CgL/uKSUvqWH8mHMUizh1EI=:G9dSawW20CNLxTnZdcwHEHg9U9hG2noNEV2/t7ptq3s=
 ```
