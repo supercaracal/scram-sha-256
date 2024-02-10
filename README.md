@@ -5,6 +5,7 @@ SCRAM-SHA-256
 ===============================================================================
 
 This is a password-encryption tool for PostgreSQL with [SCRAM-SHA-256](https://www.postgresql.org/docs/current/auth-password.html).
+You can encrypt your raw password by the command-line tool or the [GitHub Pages](https://supercaracal.github.io/scram-sha-256/).
 
 ## Installation
 Please download an executable file from [release pages](https://github.com/supercaracal/scram-sha-256/releases).
