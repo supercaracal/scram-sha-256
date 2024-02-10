@@ -75,6 +75,10 @@ func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 
 // Encrypt encrypts a raw password with scram-sha-256
 func Encrypt(rawPassword []byte) (string, error) {
+	if rawPassword == nil || len(rawPassword) == 0 {
+		return "", nil
+	}
+
 	salt, err := genSalt(saltSize)
 	if err != nil {
 		return "", err

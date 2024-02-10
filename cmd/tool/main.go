@@ -7,7 +7,9 @@ package main
 // @see https://github.com/postgres/postgres/blob/e6bdfd9700ebfc7df811c97c2fc46d7e94e329a2/src/common/scram-common.c#L27-L85
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"syscall"
 
@@ -15,28 +17,45 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-func readRawPassword(fd int) ([]byte, error) {
-	input, err := terminal.ReadPassword(fd)
+func readViaTerminal(fd int) ([]byte, error) {
+	fmt.Print("Raw password: ")
+	passwd, err := terminal.ReadPassword(fd)
+	fmt.Println()
 	if err != nil {
 		return nil, err
 	}
-	return input, nil
+	return passwd, nil
+}
+
+func readViaPipe() ([]byte, error) {
+	r := bufio.NewReader(os.Stdin)
+	passwd, err := r.ReadBytes('\n')
+	if err == io.EOF {
+		return passwd, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return passwd[0 : len(passwd)-1], nil
+}
+
+func getRawPassword(args []string) ([]byte, error) {
+	if len(args) > 1 {
+		return []byte(args[1]), nil
+	}
+
+	fd := int(syscall.Stdin)
+	if terminal.IsTerminal(fd) {
+		return readViaTerminal(fd)
+	}
+
+	return readViaPipe()
 }
 
 func main() {
-	var rawPassword []byte
-
-	if len(os.Args) > 1 {
-		rawPassword = []byte(os.Args[1])
-	} else {
-		fmt.Print("Raw password: ")
-		passwd, err := readRawPassword(int(syscall.Stdin))
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		rawPassword = passwd
-		fmt.Println()
+	rawPassword, err := getRawPassword(os.Args)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	if len(rawPassword) == 0 {
@@ -44,11 +63,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	if password, err := pgpasswd.Encrypt(rawPassword); err != nil {
+	encrypted, err := pgpasswd.Encrypt(rawPassword)
+	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
-	} else {
-		fmt.Printf("%s\n", password)
-		os.Exit(0)
 	}
+
+	fmt.Printf("%s\n", encrypted)
+	os.Exit(0)
 }

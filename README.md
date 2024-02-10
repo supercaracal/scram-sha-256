@@ -21,6 +21,16 @@ $ scram-sha-256 mysecret
 SCRAM-SHA-256$4096:1Iuyc2XTVSv/GFgCWSv9Xw==$nU96dFyIuV+uWwiOly7HU5yinIJh55GsItyFAYrU2sc=:fEC668A2ufIsGS+9WC8xqD0hHvHQBbLiDxZ8hWlwkCw=
 ```
 
+```
+$ echo -n mysecret | scram-sha-256
+SCRAM-SHA-256$4096:67e60Pre+3h6dhUm+K2tWA==$MRZtokLiZoWqNLf05HKH7STvtAtWEOy1CZU+vg9hj/M=:jzbp7PPDFT8aBPuFk91KBO2HswNJrvMMuMkUgR1LClI=
+```
+
+```
+$ echo mysecret | scram-sha-256
+SCRAM-SHA-256$4096:wvtRpXoTijsOR2py/yjIjQ==$iQV2GGKBAnN3v339hDOSZWxbl7YH8I3ERh+RCHjOqGQ=:Ea9Pyj4/IR53wmdCISCIOsSINUirJzz6EzD0NJqa05M=
+```
+
 ```go
 import "github.com/supercaracal/scram-sha-256/pkg/pgpasswd"
 
