@@ -1,5 +1,5 @@
-body {
-  background-color: #555555;
+:root {
+  color-scheme: light dark;
 }
 
 div.block {

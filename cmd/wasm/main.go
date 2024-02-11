@@ -11,6 +11,7 @@ import (
 
 func handleButton(this js.Value, inputs []js.Value) interface{} {
 	document := js.Global().Get("document")
+
 	input := document.Call("getElementById", "raw-password")
 	result := document.Call("getElementById", "encrypted-password")
 
@@ -20,13 +21,20 @@ func handleButton(this js.Value, inputs []js.Value) interface{} {
 		result.Set("value", err.Error())
 	} else {
 		result.Set("value", encrypted)
+		result.Call("select")
 	}
 
 	return nil
 }
 
 func main() {
-	button := js.Global().Get("document").Call("getElementById", "encryption-button")
-	button.Call("addEventListener", "click", js.FuncOf(handleButton))
+	document := js.Global().Get("document")
+
+	document.
+		Call("getElementById", "encryption-button").
+		Call("addEventListener", "click", js.FuncOf(handleButton))
+
+	document.Call("getElementById", "raw-password").Call("focus")
+
 	select {}
 }

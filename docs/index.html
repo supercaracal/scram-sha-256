@@ -10,18 +10,22 @@
   <script src="/scram-sha-256/script.js"></script>
 </head>
 <body>
-  <div class="block">
     <h1>scram-sha-256</h1>
-    <h2>a password-encryption tool for PostgreSQL</h2>
-  </div>
+    <span>
+      This is a password-encryption tool for PostgreSQL.
+      The source code is <a href="https://github.com/supercaracal/scram-sha-256">here</a>.
+    </span>
   <div class="block">
-    <input type="password" value="" id="raw-password" />
+    <div>
+      <label for="raw-password">Raw password:</label>
+    </div>
+    <input type="password" value="" id="raw-password" autocomplete="off" placeholder="Please type or copy and paste your password" />
     <input type="button" value="encrypt" id="encryption-button" />
   </div>
   <div class="block">
-    <input id="encrypted-password" value="" readonly />
-  </div>
-  <div class="block">
-    <span><a href="https://github.com/supercaracal/scram-sha-256">GitHub</a></span>
+    <div>
+      <label for="encrypted-password">Encrypted password:</label>
+    </div>
+    <input type="text" value="" id="encrypted-password" readonly />
   </div>
 </body>
