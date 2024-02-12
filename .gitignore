@@ -1,2 +1,4 @@
 /cmd/term/encrypt
 /cmd/debug/server
+*.test
+*.out

@@ -59,13 +59,14 @@ func getSHA256Sum(key []byte) []byte {
 	return h.Sum(nil)
 }
 
-func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
-	digestKey := pbkdf2.Key(rawPassword, salt, iter, keyLen, sha256.New)
+func encrypt(raw, salt []byte, iter, keyLen int) string {
+	digestKey := pbkdf2.Key(raw, salt, iter, keyLen, sha256.New)
 	clientKey := getHMACSum(digestKey, clientRawKey)
 	storedKey := getSHA256Sum(clientKey)
 	serverKey := getHMACSum(digestKey, serverRawKey)
 
-	return fmt.Sprintf("SCRAM-SHA-256$%d:%s$%s:%s",
+	return fmt.Sprintf(
+		"SCRAM-SHA-256$%d:%s$%s:%s",
 		iter,
 		string(encodeB64(salt)),
 		string(encodeB64(storedKey)),
@@ -74,8 +75,8 @@ func encryptPassword(rawPassword, salt []byte, iter, keyLen int) string {
 }
 
 // Encrypt encrypts a raw password with scram-sha-256
-func Encrypt(rawPassword []byte) (string, error) {
-	if rawPassword == nil || len(rawPassword) == 0 {
+func Encrypt(raw []byte) (string, error) {
+	if len(raw) == 0 {
 		return "", nil
 	}
 
@@ -84,5 +85,5 @@ func Encrypt(rawPassword []byte) (string, error) {
 		return "", err
 	}
 
-	return encryptPassword(rawPassword, salt, iterationCnt, digestLen), nil
+	return encrypt(raw, salt, iterationCnt, digestLen), nil
 }

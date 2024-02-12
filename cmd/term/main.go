@@ -21,12 +21,13 @@ func readViaTerminal(fd int) ([]byte, error) {
 	return passwd, nil
 }
 
-func readViaPipe() ([]byte, error) {
+func readViaPipeline() ([]byte, error) {
 	r := bufio.NewReader(os.Stdin)
 	passwd, err := r.ReadBytes('\n')
 	if err == io.EOF {
 		return passwd, nil
-	} else if err != nil {
+	}
+	if err != nil {
 		return nil, err
 	}
 	return passwd[0 : len(passwd)-1], nil
@@ -36,28 +37,26 @@ func getRawPassword(args []string) ([]byte, error) {
 	if len(args) > 1 {
 		return []byte(args[1]), nil
 	}
-
 	fd := int(syscall.Stdin)
 	if terminal.IsTerminal(fd) {
 		return readViaTerminal(fd)
 	}
-
-	return readViaPipe()
+	return readViaPipeline()
 }
 
 func main() {
-	rawPassword, err := getRawPassword(os.Args)
+	raw, err := getRawPassword(os.Args)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if len(rawPassword) == 0 {
+	if len(raw) == 0 {
 		fmt.Println("empty password")
 		os.Exit(1)
 	}
 
-	encrypted, err := pgpasswd.Encrypt(rawPassword)
+	encrypted, err := pgpasswd.Encrypt(raw)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
