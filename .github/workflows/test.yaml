@@ -43,6 +43,9 @@ jobs:
     name: Profiling
     timeout-minutes: 5
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:

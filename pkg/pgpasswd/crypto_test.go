@@ -28,9 +28,11 @@ func TestEncrypt(t *testing.T) {
 	}
 }
 
-func BenchmarkCompressResponse(b *testing.B) {
+func BenchmarkEncrypt(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		Encrypt(dummyPassword)
+		if _, err := Encrypt(dummyPassword); err != nil {
+			b.Fatal(err)
+		}
 	}
 }

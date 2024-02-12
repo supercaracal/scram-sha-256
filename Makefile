@@ -1,4 +1,5 @@
 MAKEFLAGS   += --warn-undefined-variables
+SHELL       ?= /bin/bash -euo pipefail
 GOOS        ?= $(shell go env GOOS)
 GOARCH      ?= $(shell go env GOARCH)
 CGO_ENABLED ?= $(shell go env CGO_ENABLED)
