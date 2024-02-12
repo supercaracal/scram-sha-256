@@ -19,25 +19,51 @@ jobs:
     defaults:
       run:
         shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        task:
+          - lint
+          - test
+          - bench
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
           check-latest: true
           cache: true
-
       - name: Download modules
         run: go mod download
-
-      - name: Lint
-        run: make lint
-
-      - name: Test
-        run: make test
+      - name: Run
+        run: make ${{ matrix.task }}
+  profiling:
+    name: Profiling
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ["pgpasswd"]
+        type: ["cpu", "mem"]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+          cache: true
+      - name: Download modules
+        run: go mod download
+      - name: Run
+        run: make prof
+        env:
+          PKG: ${{ matrix.package }}
+          TYPE: ${{ matrix.type }}
   feature:
     name: Feature
     timeout-minutes: 5

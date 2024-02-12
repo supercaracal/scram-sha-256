@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+var (
+	dummyPassword = []byte("dummyblahfoobarbaztest")
+)
+
 func TestEncrypt(t *testing.T) {
 	cases := []struct {
 		raw []byte
@@ -11,6 +15,7 @@ func TestEncrypt(t *testing.T) {
 	}{
 		{[]byte("foo"), nil},
 		{[]byte(""), nil},
+		{[]byte{}, nil},
 		{nil, nil},
 	}
 
@@ -20,5 +25,12 @@ func TestEncrypt(t *testing.T) {
 		} else if err == nil && c.err != nil {
 			t.Errorf("%d: no error", n)
 		}
+	}
+}
+
+func BenchmarkCompressResponse(b *testing.B) {
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Encrypt(dummyPassword)
 	}
 }

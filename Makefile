@@ -8,6 +8,8 @@ define go-build
 	go build -ldflags="-s -w" -trimpath -o $@ $^
 endef
 
+all: build test lint
+
 build: term wasm
 
 term: cmd/term/encrypt
@@ -21,8 +23,20 @@ test:
 lint:
 	@go vet ./...
 
+bench:
+	@go test -bench=. -benchmem -run=NONE ./...
+
+prof: PKG ?= pgpasswd
+prof: TYPE ?= mem
+prof:
+	@if [ -z "${PKG}" ]; then echo 'empty variable: PKG'; exit 1; fi
+	@if [ -z "${TYPE}" ]; then echo 'empty variable: TYPE'; exit 1; fi
+	@if [ ! -d "./pkg/${PKG}" ]; then echo 'package not found: ${PKG}'; exit 1; fi
+	@go test -bench=. -run=NONE -${TYPE}profile=${TYPE}.out ./pkg/${PKG}
+	@go tool pprof -text -nodecount=10 ${PKG}.test ${TYPE}.out
+
 clean:
-	@rm -f cmd/term/encrypt cmd/debug/server
+	@rm -f cmd/term/encrypt cmd/debug/server *.test *.out
 
 cmd/term/encrypt: cmd/term/main.go
 	$(call go-build)
@@ -39,5 +53,5 @@ docs/encrypt.wasm: cmd/wasm/main.go
 docs/wasm_exec.js: $(shell go env GOROOT)/misc/wasm/wasm_exec.js
 	@cp $^ $@
 
-.PHONY: build term wasm test lint clean \
+.PHONY: build term wasm test lint bench prof clean \
 	cmd/term/encrypt docs/encrypt.wasm
