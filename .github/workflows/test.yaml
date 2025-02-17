@@ -39,6 +39,27 @@ jobs:
         run: go mod download
       - name: Run
         run: make ${{ matrix.task }}
+  lint:
+    name: Lint
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+          cache: true
+      - name: Download modules
+        run: go mod download
+      - name: Run lint
+        run: make lint
+      - uses: dominikh/staticcheck-action@v1
+        with:
+          version: "latest"
+          install-go: false
   profiling:
     name: Profiling
     timeout-minutes: 5
@@ -78,13 +99,11 @@ jobs:
       fail-fast: false
       matrix:
         postgres:
-          - 10-alpine
-          - 11-alpine
-          - 12-alpine
           - 13-alpine
           - 14-alpine
           - 15-alpine
           - 16-alpine
+          - 17-alpine
     services:
       postgres:
         image: postgres:${{ matrix.postgres }}

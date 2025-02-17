@@ -8,12 +8,12 @@ import (
 	"syscall"
 
 	"github.com/supercaracal/scram-sha-256/pkg/pgpasswd"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 func readViaTerminal(fd int) ([]byte, error) {
 	fmt.Print("Raw password: ")
-	passwd, err := terminal.ReadPassword(fd)
+	passwd, err := term.ReadPassword(fd)
 	fmt.Println()
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func getRawPassword(args []string) ([]byte, error) {
 		return []byte(args[1]), nil
 	}
 	fd := int(syscall.Stdin)
-	if terminal.IsTerminal(fd) {
+	if term.IsTerminal(fd) {
 		return readViaTerminal(fd)
 	}
 	return readViaPipeline()
