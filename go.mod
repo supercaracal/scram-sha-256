@@ -1,6 +1,6 @@
 module github.com/supercaracal/scram-sha-256
 
-go 1.19
+go 1.23.5
 
 require (
 	golang.org/x/crypto v0.33.0
