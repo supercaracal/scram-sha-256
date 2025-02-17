@@ -1,5 +1,5 @@
-![](https://github.com/supercaracal/scram-sha-256/workflows/Test/badge.svg?branch=master)
-![](https://github.com/supercaracal/scram-sha-256/workflows/Release/badge.svg)
+![Test](https://github.com/supercaracal/scram-sha-256/actions/workflows/test.yaml/badge.svg?branch=master)
+![Release](https://github.com/supercaracal/scram-sha-256/actions/workflows/release.yaml/badge.svg)
 
 scram-sha-256
 ===============================================================================
