@@ -1,3 +1,4 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/supercaracal/scram-sha-256)
 ![Test](https://github.com/supercaracal/scram-sha-256/actions/workflows/test.yaml/badge.svg?branch=master)
 ![Release](https://github.com/supercaracal/scram-sha-256/actions/workflows/release.yaml/badge.svg)
 
