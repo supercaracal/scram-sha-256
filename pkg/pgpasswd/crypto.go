@@ -8,13 +8,12 @@ package pgpasswd
 
 import (
 	"crypto/hmac"
+	"crypto/pbkdf2"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"io"
-
-	"golang.org/x/crypto/pbkdf2"
 )
 
 const (
@@ -59,8 +58,11 @@ func getSHA256Sum(key []byte) []byte {
 	return h.Sum(nil)
 }
 
-func encrypt(raw, salt []byte, iter, keyLen int) string {
-	digestKey := pbkdf2.Key(raw, salt, iter, keyLen, sha256.New)
+func encrypt(raw, salt []byte, iter, keyLen int) (string, error) {
+	digestKey, err := pbkdf2.Key(sha256.New, string(raw), salt, iter, keyLen)
+	if err != nil {
+		return "", err
+	}
 	clientKey := getHMACSum(digestKey, clientRawKey)
 	storedKey := getSHA256Sum(clientKey)
 	serverKey := getHMACSum(digestKey, serverRawKey)
@@ -71,7 +73,7 @@ func encrypt(raw, salt []byte, iter, keyLen int) string {
 		string(encodeB64(salt)),
 		string(encodeB64(storedKey)),
 		string(encodeB64(serverKey)),
-	)
+	), nil
 }
 
 // Encrypt encrypts a raw password with scram-sha-256
@@ -85,5 +87,5 @@ func Encrypt(raw []byte) (string, error) {
 		return "", err
 	}
 
-	return encrypt(raw, salt, iterationCnt, digestLen), nil
+	return encrypt(raw, salt, iterationCnt, digestLen)
 }

@@ -51,7 +51,7 @@ docs/encrypt.wasm: CGO_ENABLED := 0
 docs/encrypt.wasm: cmd/wasm/main.go
 	$(call go-build)
 
-docs/wasm_exec.js: $(shell go env GOROOT)/misc/wasm/wasm_exec.js
+docs/wasm_exec.js: $(shell go env GOROOT)/lib/wasm/wasm_exec.js
 	@cp $^ $@
 
 .PHONY: build term wasm test lint bench prof clean \
