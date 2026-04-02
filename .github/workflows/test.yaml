@@ -4,6 +4,8 @@
 # @see https://github.com/actions/virtual-environments
 # @see https://www.postgresql.jp/document/11/html/app-pgrestore.html
 name: Test
+permissions:
+  contents: read
 on:
   push:
     branches:
