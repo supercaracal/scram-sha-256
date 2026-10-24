@@ -30,7 +30,7 @@ jobs:
           - bench
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -76,7 +76,7 @@ jobs:
         type: ["cpu", "mem"]
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -129,7 +129,7 @@ jobs:
         run: sudo apt update && sudo apt install -y --no-install-recommends postgresql-client
 
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Go
         uses: actions/setup-go@v5
