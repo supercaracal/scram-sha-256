@@ -107,6 +107,7 @@ jobs:
           - 16-alpine
           - 17-alpine
           - 18-alpine
+          - 19-alpine
     services:
       postgres:
         image: postgres:${{ matrix.postgres }}
